@@ -1,0 +1,590 @@
+﻿<!--Copyright (c) VendingCentral.  All rights reserved. -->
+<Page
+    x:Class="VendingC.FrontPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="using:VendingC" xmlns:fa5="using:FontAwesome5"
+    mc:Ignorable="d"
+>
+    <Grid
+>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1.5*"></RowDefinition>
+            <RowDefinition Height="0.15*"></RowDefinition>
+            <RowDefinition Height="3*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <!--POPUP WINDOW-->
+        <Grid x:Name="Output" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1">
+            <Popup VerticalOffset="0" HorizontalOffset="20" x:Name="StandardPopup">
+                <Border BorderBrush="{StaticResource ApplicationForegroundThemeBrush}" 
+                Background="{StaticResource ApplicationPageBackgroundThemeBrush}"
+                BorderThickness="2" Width="1050" Height="1270">
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                        <!--PAYMENT BUTTONS START-->
+                        <Grid x:Name="paymentbuttons" Visibility="Collapsed">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <TextBlock FontWeight="ExtraBold" TextAlignment="Center" Grid.Row="0" Grid.ColumnSpan="2"  Text="Select Payment Option" FontSize="24.667" HorizontalAlignment="Center" Margin="0 100"/>
+                            <Button Grid.Column="0" Grid.Row="1" Visibility="Collapsed" Click="CashPAY" BorderThickness="1" Padding="10" Margin="10 0" Background="White" Width="300" Height="auto"  x:Name="CashButton" >
+                                <StackPanel>
+                                    <Image Source="/Assets/Payment/1cash.png"/>
+                                    <TextBlock  TextAlignment="Center" Text="Insert cash to pay" Padding="5" HorizontalAlignment="Center" VerticalAlignment="Center"   FontWeight="Bold" Foreground="#FF0070C0"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Grid.Column="1" Grid.Row="1" Visibility="Collapsed" Click="QRalfalahPAY" BorderThickness="1" Padding="10" Margin="10 0" Background="White" Width="300" Height="auto"  x:Name="QRMasterButton">
+                                <StackPanel>
+                                    <Image Source="/Assets/Payment/VISA.png"/>
+                                    <TextBlock  TextAlignment="Center" Text="Sacn VISA-QR to pay" Padding="5" HorizontalAlignment="Center" VerticalAlignment="Center"   FontWeight="Bold" Foreground="#FF0070C0"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Grid.Column="0" Grid.Row="2" Visibility="Collapsed" Click="PosPAY" BorderThickness="1" Padding="10" Margin="10 0" Background="White" Width="300" Height="auto" x:Name="POSButton" >
+                                <StackPanel>
+                                    <Image Source="/Assets/Payment/POS.png"/>
+                                    <TextBlock  TextAlignment="Center" Text="Payment via card" Padding="5" HorizontalAlignment="Center" VerticalAlignment="Center"   FontWeight="Bold" Foreground="#FF0070C0"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Grid.Column="1" Grid.Row="2" Visibility="Collapsed" Click="QRvendingcPAY" BorderThickness="1" Padding="10" Margin="10 0" Background="White" Width="300" Height="auto" x:Name="QRVcButton" >
+                                <StackPanel>
+                                    <Image Source="/Assets/Payment/vendingPay.png"/>
+                                    <TextBlock  TextAlignment="Center" Text="QR-Pay using VendingPay app " Padding="5" HorizontalAlignment="Center" VerticalAlignment="Center"   FontWeight="Bold" Foreground="#FF0070C0"/>
+                                </StackPanel>
+                            </Button>
+
+
+                        </Grid>
+                        <!--PAYMENT BUTTONS END-->
+
+                        <Image x:Name="loadingImg" Visibility="Collapsed" Source="/Assets/Payment/loading.gif" Width="70px"/>
+
+
+                        <!--QR PAYMENT START-->
+                        <Grid x:Name="QRPayments">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"></RowDefinition>
+                                <RowDefinition Height="*"></RowDefinition>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.ColumnSpan="2" Grid.Row="0" TextAlignment="Center" x:Name="qrimgText" Text="Please pay through scanning the QR on your Mobile App!" FontSize="24.667" HorizontalAlignment="Center" Visibility="Collapsed" FontWeight="SemiBold" Margin="0 100"/>
+                            <Image x:Name="loadingImg2" Grid.Column="0" Grid.Row="1" Visibility="Collapsed" Source="/Assets/Payment/loading.gif" Width="70px"/>
+                            <Image  Grid.Column="0" Grid.Row="1" x:Name="qrimg" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" Width="350">
+                                <Image.Source>
+                                    <BitmapImage x:Name="qri"></BitmapImage>
+                                </Image.Source>
+                            </Image>
+                            <StackPanel Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock x:Name="infotext"  TextAlignment="Center" Text="Availale through Bank Alfalah, JazzCash and Easy Paisa." Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12" MaxLines="2"/>
+
+                                <!--AMOUNT BLOCK-->
+                                <TextBlock Visibility="Collapsed"  TextAlignment="Center" Foreground="#0070C0" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="45" x:Name="tots" Text="{x:Bind FallbackValue=TOTAL, Mode=OneWay, Path=ViewModel2.TotalCostString}"/>
+                                <TextBlock Visibility="Collapsed" TextAlignment="Center" Foreground="Green" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25" x:Name="cashinserted" Text="Rs. 0 recieved."/>
+
+                            </StackPanel>
+
+                        </Grid>
+                        <!--QR PAYMENT END-->
+                        <Grid x:Name="AgeCheckButtons" Visibility="Collapsed">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Button Content="Yes, I am 18+" Grid.Row="0" Grid.Column="0" Click="OnWindowsCheckoutClicked"></Button>
+                            <Button Content="No, I am below 18" Grid.Row="0" Grid.Column="1" Click="CancelButton"></Button>
+                        </Grid>
+
+                        <!--MESSAGE BLOCK-->
+                        <TextBlock x:Name="dispmess" Visibility="Collapsed"  TextAlignment="Center" Text="Product Dispensed! :)" FontSize="24.667" HorizontalAlignment="Center"/>
+                        <Button
+                            Content="Cancel"
+                            Click="CancelButton"
+                            HorizontalAlignment="Center"
+                            Margin="0 100"
+                            Foreground="White"
+                            x:Name="cancelButton"
+                            FontSize="25"
+                        >
+                            <Button.Background>
+                                <LinearGradientBrush
+                                    StartPoint="0.5,0"
+                                    EndPoint="0.5,1"
+                                    >
+                                    <GradientStop Color="#0070C0" Offset="0.0" />
+                                    <GradientStop Color="#0070C0" Offset="1.0" />
+                                </LinearGradientBrush>
+                            </Button.Background>
+                        </Button>
+                        <!--TIMER BLOCK-->
+                        <TextBlock Visibility="Collapsed" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" x:Name="disptimer"/>
+                    </StackPanel>
+
+                </Border>
+            </Popup>
+        </Grid>
+
+        <!--POPUP WINDOW-->
+        <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1">
+            <Popup VerticalOffset="500" HorizontalOffset="400" x:Name="LoadingPopup">
+                <Border BorderBrush="{StaticResource ApplicationForegroundThemeBrush}" 
+                Background="{StaticResource ApplicationPageBackgroundThemeBrush}"
+                Width="200" Height="200">
+                    <Image x:Name="loadingPopupImg" Grid.Column="0" Grid.Row="1" Visibility="Visible" Source="/Assets/Payment/loading.gif" Width="170px"/>
+
+                </Border>
+            </Popup>
+        </Grid>
+
+
+        <MediaPlayerElement 
+            Grid.ColumnSpan="3"
+            Grid.Row="0"
+            VerticalAlignment="Top" 
+            Height="Auto" 
+            Width="Auto"
+            Stretch="Uniform"
+             x:Name="mediaPlayer" Margin="0,0,0,0"
+            Source="ms-appx:///Assets/Videos/bank alfalah _ remittance.mp4"
+            />
+        <TextBlock 
+              x:Name="test"
+            Grid.Row="1"
+             FontSize="26"
+             Text="Please select your items"  
+            Padding="5, 15, 5, 5"
+            FontWeight="SemiBold"
+             TextAlignment="Left"
+                    />
+        <GridView
+            x:Name="MainGrid"
+            SelectionMode="Single"
+            ItemsSource="{x:Bind Path=ViewModel.ProductList, Mode=OneWay}"
+            IsItemClickEnabled="True"
+            ItemClick="ProductListItemClicked" 
+            Tag="{x:Bind Mode=OneWay}"
+            Grid.Row="2"
+            Grid.Column="0" 
+            Grid.RowSpan="2"
+            Grid.ColumnSpan="2"
+            Margin="0 5 0 10"
+            CanBeScrollAnchor="True"
+            ShowsScrollingPlaceholders="True"
+            ScrollViewer.VerticalScrollBarVisibility="Visible"
+            ScrollViewer.HorizontalScrollBarVisibility="Visible"
+            ScrollViewer.IsHorizontalRailEnabled="True"
+            ScrollViewer.IsVerticalRailEnabled="True"
+            ScrollViewer.VerticalScrollMode="Enabled"
+            ScrollViewer.HorizontalScrollMode="Enabled"
+               >
+            <GridView.ItemTemplate
+                >
+                <DataTemplate
+                    x:DataType="local:ProductViewModel"
+                    ScrollViewer.VerticalScrollBarVisibility="Visible"
+                    ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                    ScrollViewer.IsHorizontalRailEnabled="True"
+                    ScrollViewer.IsVerticalRailEnabled="True"
+                    ScrollViewer.VerticalScrollMode="Enabled"
+                    ScrollViewer.HorizontalScrollMode="Enabled"
+                    >
+                    <StackPanel 
+                        x:Name="mainGridStackPanel" 
+                        Padding="0 2 0 7" 
+                        Background="White" 
+                        Width="165"
+                        CanBeScrollAnchor="True"
+                        ScrollViewer.VerticalScrollBarVisibility="Visible"
+                        ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                        ScrollViewer.IsHorizontalRailEnabled="True"
+                        ScrollViewer.IsVerticalRailEnabled="True"
+                        ScrollViewer.VerticalScrollMode="Enabled"
+                        ScrollViewer.HorizontalScrollMode="Enabled"
+                        >
+                        <Image 
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center" 
+                            Width="140"
+                            Height="140"
+                            Source="{x:Bind Path=Product.imageUrl, Mode=OneWay, FallbackValue=&#x263A;}"
+                            />
+                        <TextBlock
+                            Text="{x:Bind Path=Product.productName, Mode=OneWay, FallbackValue='PRODUCT TITLE'}"
+                            Grid.Column="1"
+                            HorizontalAlignment="Stretch"
+                            TextAlignment="Center"
+                            Margin="2,2,2,2"
+                            TextWrapping="WrapWholeWords"
+                            TextTrimming="WordEllipsis"
+                            FontSize="15"
+                            MaxLines="1"
+                            FontWeight="SemiBold"
+
+                            />
+                        <TextBlock
+                            Text="{x:Bind Path=PriceString, Mode=OneWay, FallbackValue='COST'}"
+                            HorizontalAlignment="Stretch"
+                            TextAlignment="Center"
+                            Foreground="#0070C0"
+                            Margin="2,2,2,2"
+                            FontSize="16"
+                            FontWeight="ExtraBold"
+                            />
+                    </StackPanel>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+        </GridView>
+        <TextBlock
+            Grid.Row="1"
+            Grid.Column="2"
+            FontSize="25"
+            Text="Order Summary"
+            FontWeight="SemiBold"
+            Padding="2, 15, 2, 2"
+             TextAlignment="Center"
+        />
+        <GridView
+            x:Name="CartGrid"
+            Grid.Row="2" 
+            Grid.Column="2" 
+            Grid.RowSpan="1"
+            Margin="0 0 8 10"
+            SelectionMode="None"
+                                 Background="#eeeeee"
+>
+            <!--CanBeScrollAnchor="False"            ShowsScrollingPlaceholders="False"            ScrollViewer.HorizontalScrollMode="Disabled"            ScrollViewer.VerticalScrollMode="Disabled"            ScrollViewer.VerticalScrollBarVisibility="Hidden"            ScrollViewer.HorizontalScrollBarVisibility="Hidden" > -->
+            <Grid ScrollViewer.HorizontalScrollMode="Disabled" ScrollViewer.VerticalScrollMode="Disabled">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="800"></RowDefinition>
+                    <RowDefinition Height="200"></RowDefinition>
+                    <RowDefinition Height="100"></RowDefinition>
+                    <RowDefinition Height="1*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <StackPanel
+                    Grid.Row="0" 
+                     Background="#eeeeee"
+                        Padding="15 0"
+               >
+                    <Grid
+                     Margin="0 15 0 0"
+                        x:Name="cartsum"
+                        Visibility="Collapsed">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            Grid.Column="0"
+                            Text="Item"
+                            FontWeight="ExtraBold"
+                             TextAlignment="Center"
+                            />
+                        <TextBlock
+                            Grid.Column="1"
+                            Text="Price"
+                            FontWeight="ExtraBold"
+                             TextAlignment="Center"
+                            />
+                    </Grid>
+                    <Rectangle
+                        Grid.Row="1"
+                        Height="1"
+                        RadiusY="2"
+                        RadiusX="2"
+                        Fill="#0070C0"
+                        Width="450"
+                        />
+                    <StackPanel>
+                        <ListView
+                            Grid.Row="2"
+                            ItemsSource="{x:Bind Mode=OneWay, Path=ViewModel2.Entries}"
+                            SelectionMode="None"
+                          >
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    <Setter Property="Padding" Value="0,8" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.ItemTemplate>
+                                <DataTemplate
+                                    x:DataType="local:ShoppingCartEntryViewModel"
+                                    >
+                                    <Grid Padding="12" CanBeScrollAnchor="False" ScrollViewer.HorizontalScrollMode="Disabled" ScrollViewer.VerticalScrollMode="Disabled">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="70" />
+                                            <ColumnDefinition Width="80" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Image 
+                                              Grid.Column="0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center" 
+                                            Width="70"
+                                            Height="90"
+                                            Margin="0 0 0 0"
+                            Source="{x:Bind FallbackValue=☺, Mode=OneWay, Path=Product.imageUrl}"/>
+                                        <TextBlock
+                                                Text="{x:Bind FallbackValue=PRODUCT TITLE, Mode=OneWay, Path=Product.productName}"
+                                                Grid.Column="1"
+                                                TextAlignment="Center"
+                                                TextWrapping="WrapWholeWords"
+                                                TextTrimming="CharacterEllipsis"
+                                                MaxLines="2"
+                                                FontSize="18"
+                                                HorizontalAlignment="Center"
+                                                HorizontalTextAlignment="Center"
+                                                VerticalAlignment="Center"
+                                            FontWeight="SemiBold"
+                                            Padding="0 0 0 0"
+                                            Margin="0 0 0 0"
+                                                />
+                                        <TextBlock
+                                            Grid.Column="2"
+                                            Text="{x:Bind FallbackValue=COST, Mode=OneWay, Path=ProductViewModel.PriceString}"
+                                            Foreground="#0070C0"
+                                            FontSize="20"
+                                            TextAlignment="Center"
+                                            HorizontalAlignment="Center"
+                                            HorizontalTextAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            FontWeight="ExtraBold"
+                                            Padding="0 0 0 0"
+                                            Margin="0 0 0 0"
+                                            />
+                                        <HyperlinkButton
+                                                Click="OnRemoveClick"
+                                                Tag="{x:Bind}"
+                                                Padding="0"
+                                                Grid.Column="3"
+                                                Foreground="red"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                >
+                                            <HyperlinkButton.Content>
+                                                <TextBlock x:Name="tbFontAwesome"  TextAlignment="Center" Text="&#xf1f8;" FontFamily="{StaticResource FontAwesome}" Foreground="red" FontSize="32" Margin="10" VerticalAlignment="Center"></TextBlock>
+                                            </HyperlinkButton.Content>
+                                        </HyperlinkButton>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                        <Rectangle
+                            Height="1"
+                            RadiusY="2"
+                            RadiusX="2"
+                            Fill="#0070C0"
+                            Width="165"
+                            />
+                        <Grid
+                            HorizontalAlignment="Right"
+                            Margin="10 10 10 10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <TextBlock
+                                Grid.Column="0"
+                                Grid.Row="1"
+                                Margin="0 10 0 0"
+                                FontWeight="SemiBold"
+                                FontSize="35"
+                                Text="Total: "
+                                TextAlignment="Left"
+                                />
+                            <TextBlock
+                                Grid.Column="1"
+                                Grid.Row="1"
+                                FontWeight="SemiBold"
+                                FontSize="35"
+                                Foreground="#0070C0"
+                                HorizontalAlignment="Right"
+                                Margin="0 10 0 0"
+                                Text="{x:Bind FallbackValue=TOTAL, Mode=OneWay, Path=ViewModel2.TotalCostString}"
+                                 TextAlignment="Left"
+                                />
+                            <TextBlock 
+                                x:Name="maxprodtext"
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                FontSize="17"
+                                Text="Max 3 products allowed."  
+                                Margin="0,0,0,0"
+                                Padding="0, 0, 0, 0"
+                                Foreground="Red"
+                                Visibility="Collapsed"
+                                FontWeight="SemiBold"
+                                TextAlignment="Left"
+                                        />
+                            <TextBlock
+                                Visibility="Collapsed"
+                                x:Name="creditText"
+                                Grid.Column="0"
+                                Grid.Row="2"
+                                Margin="0 15 0 0"
+                                FontWeight="SemiBold"
+                                FontSize="25"
+                                Foreground="Green"
+                                Text="Credit Amount: Rs."
+                                 TextAlignment="Left"
+                                />
+                            <TextBlock
+                                Visibility="Collapsed"
+                                x:Name="creditAmount"
+                                Grid.Column="1"
+                                Grid.Row="2"
+                                FontWeight="SemiBold"
+                                FontSize="25"
+                                Foreground="Green"
+                                HorizontalAlignment="Right"
+                                Margin="0 15 0 0"
+                                Text="0"
+                                 TextAlignment="Left"
+                                />
+                            <TextBlock
+                             Visibility="Collapsed"
+                             x:Name="credittime"
+                             Grid.Column="0"
+                             Grid.Row="3"
+                             Margin="0 15 0 0"
+                             FontWeight="SemiBold"
+                             FontSize="18"
+                             Foreground="red"
+                             Text="Availble for: "
+                              TextAlignment="Left"
+                                />
+                        </Grid>
+                        <Button
+                            Content="Checkout"
+                            Click="OnWindowsCheckoutClicked"
+                            HorizontalAlignment="Right"
+                            Margin="0 15 0 0"   
+                            Foreground="White"
+                            IsEnabled="False"
+                            x:Name="checkoutbut"
+                            FontSize="23"
+                        >
+                            <Button.Background>
+                                <LinearGradientBrush
+                                    StartPoint="0.5,0"
+                                    EndPoint="0.5,1"
+                                    >
+                                    <GradientStop Color="#0070C0" Offset="0.0" />
+                                    <GradientStop Color="#0070C0" Offset="1.0" />
+                                </LinearGradientBrush>
+                            </Button.Background>
+                        </Button>
+
+                    </StackPanel>
+                </StackPanel>
+                <Image 
+                    x:Name="emptyCart"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center" 
+                            Source="/Assets/Sponsors/empty.png"
+                            Margin="30"
+                            Grid.Row="1"
+                            Width="200"
+                            />
+                <Grid
+                    Grid.Row="3" 
+                    Padding="20 0 20 0"
+                    Background="#eeeeee"
+>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition  />
+                        <ColumnDefinition />
+                        <ColumnDefinition  />
+                        <ColumnDefinition  />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                Grid.Row="0"
+                                FontSize="15"
+                                Foreground="#0070C0"
+                                HorizontalAlignment="Left"                               
+                                Text="Powerd By"
+                        Padding="0 5 0 0"
+                         TextAlignment="Center"
+                                />
+                    <Image 
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center" 
+                             Width="55"
+                            Source="/Assets/Sponsors/velo.jpg"
+                        Grid.Row="1" 
+                    Grid.Column="0"
+                            />
+                    <Image 
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center" 
+                             Width="55"
+                            Source="/Assets/Sponsors/alfa.png"
+                        Grid.Row="1" 
+                    Grid.Column="1"
+                            />
+                    <Image 
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center" 
+                             Width="55"
+                            Source="/Assets/Sponsors/Nestle.png"
+                        Grid.Row="1" 
+                    Grid.Column="2"
+                            />
+                    <Button
+                        x:Name="devMode"
+                        Grid.Row="1" 
+                    Grid.Column="3"
+                        HorizontalAlignment="Center"
+                            VerticalAlignment="Center" 
+                        Background="#eeeeee"
+                        Click="DevMode"
+                        >
+                        <Image 
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center" 
+                             Width="70"
+                            Source="/Assets/Sponsors/vendingc.png"
+                            />
+                    </Button>
+                    <TextBlock Grid.Row="2" Grid.Column="3" FontSize="9" Text="{x:Bind Path=packageVersion}" ></TextBlock>
+                    <Button x:Name="updatebut" Visibility="Collapsed" Click="updateData" Width="auto" Content="Update" Foreground="White" Grid.Row="3" Grid.Column="0"></Button>
+                    <TextBox x:Name="configtext" Visibility="Collapsed"  Width="70" Height="30" Grid.ColumnSpan="2"  Grid.Row="3" Grid.Column="1"></TextBox>
+                    <Button x:Name="configbut" Visibility="Collapsed" Click="setMachConfig" Width="auto" Content="Set" Foreground="White" Grid.Row="3" Grid.Column="3"></Button>
+
+
+                </Grid>
+            </Grid>
+
+        </GridView>
+    </Grid>
+</Page>
