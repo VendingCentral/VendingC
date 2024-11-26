@@ -100,7 +100,7 @@ namespace VendingC
                 // Global.General.CreditAmount -= Global.General.TransactionReturnAmount;
                 int TempCreditAmount = ShoppingCart.Entries.Where ( x => x.dispensed == false ).Select ( c => c.Product.cost ).Sum ( );
                 Global.General.TotalCostAmount = Global.General.TotalCostAmount- TempCreditAmount;
-                Global.log.Trace ( "Credit amount calulated because of dispense failed:" + TempCreditAmount );
+                Global.log.Trace ( "Credit amount calculated because of dispense failed:" + TempCreditAmount );
 
 
                 if ( TempCreditAmount > 0 )

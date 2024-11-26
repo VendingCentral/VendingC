@@ -77,8 +77,9 @@ namespace VendingC.Utilities
         public static async Task<decimal> ReadQRAmountAPIAsync(string MachineID, string SaleID, decimal QRamount)
         {
             //Date = "2022-07-05 11:20:09.0001077";
-            //QRamount = 5;
-            //aleID = "Test-1675162410";
+            MachineID = "50";
+            QRamount = 40;
+            SaleID = "50-1731275658";
             try
             {
                 using (var client = new HttpClient())
